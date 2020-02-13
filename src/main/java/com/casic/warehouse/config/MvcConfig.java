@@ -10,10 +10,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 
 /**
  * 拦截器配置
- *
- *
- * @Auther: Tt(yehuawei)
- * @Date: 2018/7/11 15:05
  */
 @Configuration
 public class MvcConfig extends WebMvcConfigurationSupport {
@@ -40,10 +36,6 @@ public class MvcConfig extends WebMvcConfigurationSupport {
      *
      * 功能描述:
      *  配置静态资源,避免静态资源请求被拦截
-     * @auther: Tt(yehuawei)
-     * @date:
-     * @param:
-     * @return:
      */
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**")
@@ -52,15 +44,15 @@ public class MvcConfig extends WebMvcConfigurationSupport {
                 .addResourceLocations("classpath:/templates/");
         super.addResourceHandlers(registry);
     }
-
+    //添加拦截器
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(myInterceptor)
-                //addPathPatterns 用于添加拦截规则
+                //addPathPatterns 用于添加拦截规则 /**代表拦截所有请求
                 .addPathPatterns("/**")
-                //excludePathPatterns 用于排除拦截
-
+                //excludePathPatterns 用于排除拦截 此处我们排除"/"(登录界面)以及"/loginCheck"（验                   证登录账号密码方法
                 .excludePathPatterns("/","/loginCheck");
         super.addInterceptors(registry);
     }
 }
+
 
