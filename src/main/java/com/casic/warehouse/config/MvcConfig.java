@@ -49,8 +49,9 @@ public class MvcConfig extends WebMvcConfigurationSupport {
         registry.addInterceptor(myInterceptor)
                 //addPathPatterns 用于添加拦截规则 /**代表拦截所有请求
                 .addPathPatterns("/**")
-                //excludePathPatterns 用于排除拦截 此处我们排除"/"(登录界面)以及"/loginCheck"（验                   证登录账号密码方法
-                .excludePathPatterns("/","/loginCheck");
+                //excludePathPatterns 用于排除拦截 此处我们排除"/"(登录界面)以及"/loginCheck"（验证登录账号密码方法
+                .excludePathPatterns("/")
+                .excludePathPatterns("/loginCheck");
         super.addInterceptors(registry);
     }
 }
