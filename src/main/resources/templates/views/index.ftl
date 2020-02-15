@@ -116,7 +116,7 @@
               </a>
               <dl class="layui-nav-child">
                 <dd data-name="customer">
-                  <a href="javascript:;">客户管理</a>
+                  <a lay-href="/customer/list">客户管理</a>
                 </dd>
                 <dd data-name="supplier">
                   <a lay-href="component/button/index.html">供应商管理</a>

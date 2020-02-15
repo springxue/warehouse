@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.casic.warehouse.dao.CustomerDao">
+    <select id="getPageList" resultType="com.casic.warehouse.bean.Customer">
+        select * from bus_customer
+        <where>
+            <if test="customername!=null and customername!=''">
+                and customername=#{customername}
+            </if>
+            <if test="telephone!=null and telephone!=''">
+                and telephone=#{telephone}
+            </if>
+            <if test="connectionpeople!=null and connectionpeople!=''">
+                and connectionpeople=#{connectionpeople}
+            </if>
+        </where>
+        limit ${page},${limit}
+    </select>
+
+    <select id="getTotal" resultType="java.lang.Long">
+        select count(*) from bus_customer
+        <where>
+            <if test="customername!=null and customername!=''">
+                and customername=#{customername}
+            </if>
+            <if test="telephone!=null and telephone!=''">
+                and telephone=#{telephone}
+            </if>
+            <if test="connectionpeople!=null and connectionpeople!=''">
+                and connectionpeople=#{connectionpeople}
+            </if>
+        </where>
+
+    </select>
+
+</mapper>
