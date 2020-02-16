@@ -22,27 +22,27 @@
 <#--                    </form>-->
 <#--                </div>-->
                 <div class="layui-card-body">
-                    <form class="layui-form" action="">
+                    <form class="layui-form" action="" style="margin-top: 8px">
                         <div class="layui-form-item">
                             <div class="layui-inline">
                                 <label class="layui-form-label">客户名称</label>
-                                <div class="layui-input-inline" style="width: 100px;">
-                                    <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                                <div class="layui-input-inline" style="width: 150px;">
+                                    <input  type="text" name="customername" lay-verify="title" autocomplete="off" placeholder="" class="layui-input" value="${(customerQuery.customername)?if_exists}">
                                 </div>
                                 <label class="layui-form-label">客户电话</label>
                                 <div class="layui-input-inline" style="width: 150px;">
-                                    <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                                    <input  type="text" name="telephone" lay-verify="title" autocomplete="off" placeholder="" class="layui-input" value="${(customerQuery.telephone)!}">
                                 </div>
                                 <label class="layui-form-label">联系人</label>
                                 <div class="layui-input-inline" style="width: 100px;">
-                                    <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                                    <input  type="text" name="connectionperson" lay-verify="title" autocomplete="off" placeholder="" class="layui-input" value="${(customerQuery.connectionperson)!}">
                                 </div>
                                 <div class="layui-input-inline" >
 
                                 </div>
                                 <div class="layui-input-inline" >
-                                    <button type="button" class="layui-btn">查询</button>
-                                    <button type="button" class="layui-btn">清空</button>
+                                    <button type="button" class="layui-btn" id="search">查询</button>
+                                    <button type="button" class="layui-btn" id="reset">清空</button>
                                 </div>
                             </div>
 
@@ -57,6 +57,13 @@
                             <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
                             <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
                             <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+                            <button class="layui-btn layui-btn-sm" lay-event="add">
+                                新增
+                            </button>
+                            <button class="layui-btn layui-btn-sm" lay-event="multiDelete">
+                                批量删除
+                            </button>
+
                         </div>
                     </script>
 
@@ -73,9 +80,11 @@
 <script src="${request.contextPath}/static/layuiadmin/layui/layui.js"></script>
 
 <script>
-    layui.use('table', function(){
+    layui.use(['table','form','jquery'], function(){
         var table = layui.table;
-
+        var form=layui.form;
+        var $=layui.$;
+        var addLayerIndex='';
         table.render({
             elem: '#customer'
             ,url:'${request.contextPath}/customer/getPageList'
@@ -94,20 +103,20 @@
             ,title: '客户表'
             ,cols: [[
                 {type: 'checkbox', fixed: 'left'}
-                ,{field:'id', title:'客户id', fixed: 'left', unresize: true, sort: true}
-                ,{field:'customername', title:'客户名称', edit: 'text'}
-                ,{field:'zip', title:'客户邮编',  edit: 'text'}
+                ,{field:'id', title:'客户id', fixed: 'left',hide:true}
+                ,{field:'customername', title:'客户名称',fixed:'left'}
+                ,{field:'zip', title:'客户邮编'}
 
-                ,{field:'address', title:'客户地址',  edit: 'text', sort: true}
-                ,{field:'telephone', title:'客户电话', }
+                ,{field:'address', title:'客户地址'}
+                ,{field:'telephone', title:'客户电话'}
                 ,{field:'connectionperson', title:'联系人'}
-                ,{field:'phone', title:'联系人电话',  sort: true}
-                ,{field:'bank', title:'开户行', }
-                ,{field:'account', title:'账户',  sort: true}
-                ,{field:'email', title:'邮箱',  edit: 'text', templet: function(res){
+                ,{field:'phone', title:'联系人电话'}
+                ,{field:'bank', title:'开户行'}
+                ,{field:'account', title:'账户'}
+                ,{field:'email', title:'邮箱',templet: function(res){
                         return '<em>'+ res.email +'</em>'
                     }}
-                ,{fixed: 'right', title:'操作', toolbar: '#bar', width:150}
+                ,{fixed: 'right', title:'操作', toolbar: '#bar', width:120}
             ]]
             ,page: true
         });
@@ -132,11 +141,35 @@
                 case 'LAYTABLE_TIPS':
                     layer.alert('这是工具栏右侧自定义的一个图标按钮');
                     break;
+                //自定义头工具栏右侧图标 - 提示
+                case 'add':
+
+                    layer.open({
+                        title:'新增客户信息',
+                        type: 2,
+                        area: ['500px', '710px'],
+                        // area: '30%',
+                        content: ['/customer/customerLayer','no'], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                        btn: ['确认','取消'], //按钮
+                        yes:function (index,layero) {
+                            addLayerIndex=index;
+                            // var son = window['layui-layer-iframe' + index];
+                            // son.child(111);
+                            //获取子窗口的函数
+                            var formSubmit=layer.getChildFrame('form', index);
+                            console.log(formSubmit)
+                            var submited = formSubmit.find('button')[0];
+                            submited.click()
+
+                        }
+                    });
+                    break;
             };
         });
 
         //监听行工具事件
         table.on('tool(customer)', function(obj){
+            console.log(obj)
             var data = obj.data;
             //console.log(obj)
             if(obj.event === 'del'){
@@ -145,18 +178,68 @@
                     layer.close(index);
                 });
             } else if(obj.event === 'edit'){
-                layer.prompt({
-                    formType: 2
-                    ,value: data.email
-                }, function(value, index){
-                    obj.update({
-                        email: value
-                    });
-                    layer.close(index);
+                layer.open({
+                    title:'修改客户信息',
+                    type: 2,
+                    area: ['500px', '710px'],
+                    // area: '30%',
+                    content: ['/customer/customerLayer?id='+data.id,'no'], //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                    btn: ['确认','取消'], //按钮
+                    yes:function (index,layero) {
+                        addLayerIndex=index;
+                        // var son = window['layui-layer-iframe' + index];
+                        // son.child(111);
+                        //获取子窗口的函数
+                        var formSubmit=layer.getChildFrame('form', index);
+                        console.log(formSubmit)
+                        var submited = formSubmit.find('button')[0];
+                        submited.click()
+
+                    }
                 });
+
+
             }
         });
+
+        //查询按钮
+        $("#search").click(function () {
+            var customername=$("input[name='customername']").val();
+            var telephone=$("input[name='telephone']").val();
+            var connectionperson=$("input[name='connectionperson']").val();
+
+            //客户列表的重载
+            table.reload('customer', {where: {customername: customername,telephone:telephone,connectionperson:connectionperson}});
+            //另一种重载的方法
+            // tableIns.reload({
+            //     where: { //设定异步数据接口的额外参数，任意设
+            //         aaaaaa: 'xxx'
+            //         ,bbb: 'yyy'
+            //         //…
+            //     }
+            //     ,page: {
+            //         curr: 1 //重新从第 1 页开始
+            //     }
+            // });
+
+        });
+
+        //清空按钮
+        $("#reset").click(function () {
+            $("input[name='customername']").val("");
+            $("input[name='telephone']").val("");
+            $("input[name='connectionperson']").val("");
+        });
+        //关闭新增layer
+        window.closeAddLayer=function () {
+            layer.close(addLayerIndex)
+        }
+        //重载客户列表
+        window.reloadCustomerList=function(){
+            table.reload('customer')
+        }
     });
+
 </script>
 </body>
 </html>

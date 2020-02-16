@@ -56,4 +56,9 @@ public class LoginController {
         System.out.println("登录页面跳转");
         return "views/user/login";
     }
+    @RequestMapping("/test")
+    public String test(){
+        System.out.println("test");
+        return "views/test";
+    }
 }

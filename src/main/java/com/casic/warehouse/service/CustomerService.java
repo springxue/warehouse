@@ -27,4 +27,20 @@ public class CustomerService {
     public Long getTotal(CustomerQuery customerQuery) {
         return customerDao.getTotal(customerQuery);
     }
+
+    public boolean addCustomer(Customer customer) {
+        return customerDao.addCustomer(customer);
+    }
+
+    public boolean updateCustomer(Customer customer) {
+        return customerDao.updateCustomer(customer);
+    }
+
+    public Customer getCustomerById(Long id) {
+        return customerDao.getCustomerById(id);
+    }
+
+    public Long deleteCustomersByIds(List<Long> ids) {
+        return customerDao.deleteCustomersByIds(ids);
+    }
 }

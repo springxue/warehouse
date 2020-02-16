@@ -9,7 +9,7 @@ import lombok.Data;
 public class CustomerQuery {
     private String customername;
     private String telephone;
-    private String connectionpeople;
+    private String connectionperson;
     private int page;
     private String limit;
 }

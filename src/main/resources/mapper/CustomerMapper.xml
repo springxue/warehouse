@@ -10,8 +10,8 @@
             <if test="telephone!=null and telephone!=''">
                 and telephone=#{telephone}
             </if>
-            <if test="connectionpeople!=null and connectionpeople!=''">
-                and connectionpeople=#{connectionpeople}
+            <if test="connectionperson!=null and connectionperson!=''">
+                and connectionperson=#{connectionperson}
             </if>
         </where>
         limit ${page},${limit}
@@ -26,11 +26,66 @@
             <if test="telephone!=null and telephone!=''">
                 and telephone=#{telephone}
             </if>
-            <if test="connectionpeople!=null and connectionpeople!=''">
-                and connectionpeople=#{connectionpeople}
+            <if test="connectionperson!=null and connectionperson!=''">
+                and connectionperson=#{connectionperson}
             </if>
         </where>
 
     </select>
 
+    <insert id="addCustomer" parameterType="com.casic.warehouse.bean.Customer">
+        insert into bus_customer  (customername,zip,address,telephone,connectionperson,phone,bank,account,email,fax,available)
+        values  (#{customername},#{zip},#{address},#{telephone},#{connectionperson},#{phone},#{bank},#{account},#{email},#{fax},#{available})
+    </insert>
+
+    <update id="updateCustomer" parameterType="com.casic.warehouse.bean.Customer">
+        update bus_customer
+        <set>
+            <if test="customername!=null and customername!=''">
+                ,customername=#{customername}
+            </if>
+            <if test="zip!=null and zip!=''">
+                ,zip=#{zip}
+            </if>
+            <if test="address!=null and address!=''">
+                ,address=#{address}
+            </if>
+            <if test="telephone!=null and telephone!=''">
+                ,telephone=#{telephone}
+            </if>
+            <if test="connectionperson!=null and connectionperson!=''">
+                ,connectionperson=#{connectionperson}
+            </if>
+            <if test="phone!=null and phone!=''">
+                ,phone=#{phone}
+            </if>
+            <if test="bank!=null and bank!=''">
+                ,bank=#{bank}
+            </if>
+            <if test="account!=null and account!=''">
+                ,account=#{account}
+            </if>
+            <if test="email!=null and email!=''">
+                ,email=#{email}
+            </if>
+            <if test="fax!=null and fax!=''">
+                ,fax=#{fax}
+            </if>
+            <if test="available!=null and available!=''">
+                ,available=#{available}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="getCustomerById" resultType="com.casic.warehouse.bean.Customer">
+        select * from bus_customer where id=#{id}
+    </select>
+
+    <delete id="deleteCustomersByIds" parameterType="java.util.List">
+        delete from bus_customer where id in
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
 </mapper>
