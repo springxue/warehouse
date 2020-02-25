@@ -4,23 +4,13 @@
     <meta charset="UTF-8">
     <title>客户列表</title>
     <link rel="stylesheet" href="${request.contextPath}/static/layuiadmin/layui/css/layui.css" media="all">
-    <link rel="stylesheet" href="${request.contextPath}/static/layuiadmin/style/admin.css" media="all">
+<#--    <link rel="stylesheet" href="${request.contextPath}/static/layuiadmin/style/admin.css" media="all">-->
 </head>
 <body style="background-color: #F2F2F2;" >
 <div style="padding: 20px; ">
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md12">
             <div class="layui-card">
-<#--                <div class="layui-card-header">-->
-<#--                    <form class="layui-form" action="">-->
-<#--                        <div class="layui-form-item">-->
-<#--                            <label class="layui-form-label">单行输入框</label>-->
-<#--                            <div class="layui-input-block" style="width: 100px;padding-top: 5px">-->
-<#--                                <input style="height: 30px;" type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">-->
-<#--                            </div>-->
-<#--                        </div>-->
-<#--                    </form>-->
-<#--                </div>-->
                 <div class="layui-card-body">
                     <form class="layui-form" action="" style="margin-top: 8px">
                         <div class="layui-form-item">
@@ -57,16 +47,11 @@
                             <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
                             <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
                             <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
-                            <button class="layui-btn layui-btn-sm" lay-event="add">
-                                新增
-                            </button>
-                            <button class="layui-btn layui-btn-sm" lay-event="multiDelete">
-                                批量删除
-                            </button>
-
+                            <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
+                            <button class="layui-btn layui-btn-sm" lay-event="multiDelete">批量删除</button>
                         </div>
                     </script>
-
+  
                     <script type="text/html" id="bar">
                         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
                         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
@@ -124,9 +109,12 @@
         //头工具栏事件
         table.on('toolbar(customer)', function(obj){
             var checkStatus = table.checkStatus(obj.config.id);
+
+
             switch(obj.event){
                 case 'getCheckData':
                     var data = checkStatus.data;
+                    console.log(data)
                     layer.alert(JSON.stringify(data));
                     break;
                 case 'getCheckLength':
@@ -143,7 +131,6 @@
                     break;
                 //自定义头工具栏右侧图标 - 提示
                 case 'add':
-
                     layer.open({
                         title:'新增客户信息',
                         type: 2,
@@ -164,17 +151,66 @@
                         }
                     });
                     break;
+                    //批量删除
+                    case 'multiDelete':
+
+                        layer.confirm('确认删除选中的数据吗？', function(index){
+                            var data = checkStatus.data;
+                            var idAry=[];
+                            if(data.length===0){
+                                layer.msg("请至少选择一条数据！！");
+                                return false;
+                            }
+                            for(var i=0;i<data.length;i++){
+                                var row=data[i];
+                                idAry.push(row.id);
+                            }
+                            $.ajax({
+                                type:"post",
+                                url: "${request.contextPath}/customer/deleteCustomersByIds",
+                                //这里没有用json传值，所以contentType
+                                // contentType:'application/json; charset=UTF-8',
+                                data : "ids="+idAry,
+                                success: function(res) {
+                                    if(res.code===200){
+                                        layer.msg(res.msg)
+                                        layer.close(index);
+                                        table.reload('customer')
+                                    }
+                                },
+                                error: function(res) {
+                                    layer.alert(res.msg,{icon:2})
+                                }
+                            })
+                            layer.close(index);
+                        });
             };
         });
 
         //监听行工具事件
         table.on('tool(customer)', function(obj){
-            console.log(obj)
             var data = obj.data;
-            //console.log(obj)
+            var idAry=[];
+            idAry.push(data.id);
             if(obj.event === 'del'){
-                layer.confirm('真的删除行么', function(index){
-                    obj.del();
+                layer.confirm('确认删除吗？', function(index){
+                    $.ajax({
+                        type:"post",
+                        url: "${request.contextPath}/customer/deleteCustomersByIds",
+                        //这里没有用json传值，所以contentType
+                        // contentType:'application/json; charset=UTF-8',
+                        data : "ids="+idAry,
+                        success: function(res) {
+                           if(res.code===200){
+                               layer.msg(res.msg)
+                               layer.close(index);
+                               table.reload('customer')
+                           }
+                        },
+                        error: function(res) {
+                            layer.alert(res.msg,{icon:2})
+                        }
+                    })
                     layer.close(index);
                 });
             } else if(obj.event === 'edit'){

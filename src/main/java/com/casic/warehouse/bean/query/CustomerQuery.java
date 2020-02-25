@@ -10,6 +10,8 @@ public class CustomerQuery {
     private String customername;
     private String telephone;
     private String connectionperson;
+    //当前页
     private int page;
+    //每页显示的条数
     private String limit;
 }

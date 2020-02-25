@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>客户列表</title>
     <link rel="stylesheet" href="${request.contextPath}/static/layuiadmin/layui/css/layui.css" media="all">
-    <link rel="stylesheet" href="${request.contextPath}/static/layuiadmin/style/admin.css" media="all">
 </head>
 <body style="background-color: #F2F2F2;" >
 <div style="padding: 20px; ">
@@ -76,6 +75,7 @@
                                 <input type="text" name="email" required  lay-verify="required|email" placeholder="" autocomplete="off" class="layui-input" value="${(customer.email)!}">
                             </div>
                         </div>
+
                         <button id="add" class="layui-btn" lay-filter="submit" lay-submit style="display: none">提交</button>
                     </form>
                 </div>

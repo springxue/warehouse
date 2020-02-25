@@ -2,8 +2,6 @@ package com.casic.warehouse.common;
 
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * 统一返回对象
  */

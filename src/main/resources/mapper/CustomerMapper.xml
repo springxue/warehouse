@@ -5,13 +5,13 @@
         select * from bus_customer
         <where>
             <if test="customername!=null and customername!=''">
-                and customername=#{customername}
+                and customername like CONCAT('%',#{customername},'%')
             </if>
             <if test="telephone!=null and telephone!=''">
-                and telephone=#{telephone}
+                and telephone like CONCAT('%',#{telephone},'%')
             </if>
             <if test="connectionperson!=null and connectionperson!=''">
-                and connectionperson=#{connectionperson}
+                and connectionperson like CONCAT('%',#{connectionperson},'%')
             </if>
         </where>
         limit ${page},${limit}
@@ -21,13 +21,13 @@
         select count(*) from bus_customer
         <where>
             <if test="customername!=null and customername!=''">
-                and customername=#{customername}
+                and customername like CONCAT('%',#{customername},'%')
             </if>
             <if test="telephone!=null and telephone!=''">
-                and telephone=#{telephone}
+                and telephone like CONCAT('%',#{telephone},'%')
             </if>
             <if test="connectionperson!=null and connectionperson!=''">
-                and connectionperson=#{connectionperson}
+                and connectionperson like CONCAT('%',#{connectionperson},'%')
             </if>
         </where>
 
@@ -84,8 +84,8 @@
 
     <delete id="deleteCustomersByIds" parameterType="java.util.List">
         delete from bus_customer where id in
-        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
-            #{item}
+        <foreach collection="list" index="index" item="ids" open="(" separator="," close=")">
+            #{ids}
         </foreach>
     </delete>
 </mapper>

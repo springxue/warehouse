@@ -4,7 +4,6 @@ import com.casic.warehouse.bean.Customer;
 import com.casic.warehouse.bean.query.CustomerQuery;
 import com.casic.warehouse.common.Result;
 import com.casic.warehouse.service.CustomerService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +25,7 @@ public class CustomerController {
     public String list(){
         return "views/customer/customerList";
     }
+
     @RequestMapping("customerLayer")
     public String customerLayer(@RequestParam(required = false,value = "id") Long id, Model model){
         Customer customer = customerService.getCustomerById(id);
@@ -84,11 +84,23 @@ public class CustomerController {
 
     @RequestMapping("deleteCustomersByIds")
     @ResponseBody
-    public Result deleteCustomersByIds(@RequestBody List<Long> ids){
+    public Result deleteCustomersByIds(@RequestParam List<Long> ids){
+
         Long count=customerService.deleteCustomersByIds(ids);
         if(count==ids.size()){
             return Result.ok().msg("成功删除"+count+"条记录");
         }
         return Result.error();
     }
+
+//    @RequestMapping("export")
+//    @ResponseBody
+//    public Result exportCustomers(@Request){
+//
+//        Long count=customerService.deleteCustomersByIds(ids);
+//        if(count==ids.size()){
+//            return Result.ok().msg("成功删除"+count+"条记录");
+//        }
+//        return Result.error();
+//    }
 }
